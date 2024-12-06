@@ -1,3 +1,8 @@
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+
 //Элементы 
 const main = document.getElementsByClassName("main")[0];
 const movieTittle = document.getElementsByClassName("movieTitle")[0];
@@ -10,8 +15,12 @@ const movie = document.getElementsByClassName("movie")[0]
 const themeBtn = document.getElementById("themeChange");
 const searchBtn = document.getElementById("searchBtn");
 //Слушатели событий
+if(themeBtn) {
 themeBtn.addEventListener("click", themeChange);
+}
+if(searchBtn) {
 searchBtn.addEventListener("click", findMovie);
+}
 document.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         findMovie()
@@ -95,7 +104,7 @@ function showSimilarMovies(movies) {
             let similarMovie = ` 
              <div class="similarMovieCards" style="background-image: url('${movie.Poster}');">
             
-                              <div class="saved" onclick ="addSaved()"
+                              <div class="saved" onclick ="addSaved(event)"
                                 data-imdbID="${movie.imdID}" data-title="${movie.Title}" data-poster="${movie.Poster}">
             
                                  </div>
@@ -138,4 +147,6 @@ async function sendRequest(url, method, data) {
         response = await response.json()
         return response
     }
-}
+}}) ;
+
+
