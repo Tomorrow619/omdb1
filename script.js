@@ -30,7 +30,7 @@ async function findMovie() {
     let loader = document.getElementsByClassName("loader")[0];
     loader.style.display = "block";
     let data = { apikey: "c00ec9e6", t: search };
-    let result = await sendRequest("http://www.omdbapi.com/", "GET", data);
+    let result = await sendRequest("https://www.omdbapi.com/", "GET", data);
     loader.style.display = "none";
 
     if (result.Response == "False") {
