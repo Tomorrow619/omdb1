@@ -73,7 +73,7 @@ async function findSimilarMovies() {
     const search = document.getElementsByName("search")[0].value;
     const similarMovieTittle = document.getElementsByClassName("movieTitle")[1];
     const data = { apikey: "c00ec9e6", s: search };
-    const result = await sendRequest("http://www.omdbapi.com/", "GET", data);
+    const result = await sendRequest("https://www.omdbapi.com/", "GET", data);
     console.log(result.Search);
     showSimilarMovies(result.Search);
 
