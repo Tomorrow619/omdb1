@@ -40,7 +40,7 @@ async function findMovie() {
     } else {
         showMovie(result);
         findSimilarMovies()
-        console.log(result);
+        console.log(result)
     }
 }
 
