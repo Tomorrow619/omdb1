@@ -117,7 +117,7 @@ nav a {
 }
 
 .movie {
-    display: flex;
+    display: none;
     justify-content: space-between;
     gap: 0 10px;
     margin-bottom: 10px;
@@ -133,6 +133,7 @@ nav a {
     background-color: cover;
     border-radius:10px;
     position: relative;
+    
 
 }
 
@@ -158,6 +159,10 @@ nav a {
     gap: 20px;
 
     
+}
+.saved.active {
+    background-color: orange; /* Жёлтый цвет */
+    filter: invert(100%); /* Инверсия цвета иконки для визуального эффекта */
 }
 .similarMovieCards{
     background-image:url(./img/film3.jpg);
@@ -191,7 +196,7 @@ nav a {
     background-color:rgba(210, 210, 210, 0.8);
     border-radius: 6px;
     background-image:url(./img/favBtn.svg);
-    background-repeat:no-repeat;
+    background-repeat:no-repeat; 
     background-size: 90%;
     background-position:center;
     cursor:pointer;
@@ -215,10 +220,7 @@ nav a {
     100% {background-position: 250% 0, 250% 0}
 }
 
-.saved.active{
-    background-color:orange;
-    filter: invert(100%);
-}
+
 .favoritsCards{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -275,9 +277,13 @@ nav a {
 
     #themeChange {
        position: relative;
-       right: 25px
+       right: 15px
     }
     .favoritsCards {
         grid-template-columns: 1fr;
     }
+   nav a{
+    padding: 2px;
+   }
+   
 }

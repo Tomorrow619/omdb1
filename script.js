@@ -1,13 +1,23 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
+    const navLinks = document.querySelectorAll('nav a'); // Все ссылки в навигации
 
+    navLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            // Удаляем класс active у всех ссылок
+            navLinks.forEach(navLink => navLink.classList.remove('active'));
+            
+            // Добавляем класс active к текущей ссылке
+            event.currentTarget.classList.add('active');
+        });
+    });
 
     //Элементы 
     const main = document.getElementsByClassName("main")[0];
     const movieTittle = document.getElementsByClassName("movieTitle")[0];
     const similarMovieTitle = document.getElementsByClassName("movieTitle")[1];
-    const movie = document.getElementsByClassName("movie")[0]
+    const movie = document.getElementsByClassName("movie")[0];
 
 
 
@@ -151,57 +161,126 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //Функция избранное
+// Обработчик события, добавляющий или удаляющий фильм из избранного
 function addSaved(event) {
-    const target = event.currentTarget ;
+  const target = event.currentTarget;
 
-    const movieData = {
-        title: target.getAttribute("data-title"),
-        poster: target.getAttribute("data-poster"),
-        imdbID: target.getAttribute("data-imdbID"),
+  const movieData = {
+    title: target.getAttribute("data-title"),
+    poster: target.getAttribute("data-poster"),
+    imdbID: target.getAttribute("data-imdbID"),
+  };
 
-    };
-    console.log(movieData);
+  // Получаем текущие избранные фильмы
+  const favs = JSON.parse(localStorage.getItem("favs")) || [];
 
-    const favs = JSON.parse(localStorage.getItem("favs")) || [];
+  // Проверяем, есть ли уже фильм в избранном
+  const movieIndex = favs.findIndex((movie) => movie.imdbID === movieData.imdbID);
 
-    const movieIndex = favs.findIndex(
-        (movie) => movie.imdbID === movieData.imdbID
-    );
-    if (movieIndex > -1) {
-        target.classList.remove("active")
-        favs.splice(movieIndex, 1);
-        console.log(target);
-        console.log(favs);
-    } else {
-        target.classList.add("active")
-        favs.push(movieData);
-        console.log(target);
-        console.log(favs);
+  if (movieIndex > -1) {
+    // Если фильм уже в избранном, удаляем его
+    target.classList.remove("active"); // Убираем активный класс
+    favs.splice(movieIndex, 1); // Удаляем фильм из массива избранного
     
-    }
-    localStorage.setItem("favs", JSON.stringify(favs));
+    // Удаляем карточку из DOM
+    removeCardFromFavorites(target);
+  } else {
+    // Если фильма нет в избранном, добавляем его
+    target.classList.add("active"); // Добавляем активный класс
+    favs.push(movieData); // Добавляем фильм в массив избранных
+  }
+
+  // Обновляем локальное хранилище
+  localStorage.setItem("favs", JSON.stringify(favs));
 }
-const favorites = JSON.parse(localStorage.getItem("favs"))
-const favCards = document.getElementsByClassName("favoritsCards") [0] ;
-console.log(favorites);
-favorites.forEach((elem)=> {
+
+// Функция для удаления карточки из DOM
+function removeCardFromFavorites(target) {
+  const imdbID = target.getAttribute("data-imdbID");
+  
+  // Находим контейнер для избранных фильмов
+  const favCards = document.getElementsByClassName("favoritsCards")[0];
+  
+  // Ищем карточку, которая соответствует текущему imdbID
+  const cardToRemove = Array.from(favCards.children).find(card => {
+    return card.querySelector(".saved").getAttribute("data-imdbID") === imdbID;
+  });
+
+  if (cardToRemove) {
+    // Удаляем карточку из DOM
+    favCards.removeChild(cardToRemove);
+  }
+}
+
+// Загружаем избранные фильмы при загрузке страницы
+window.addEventListener("DOMContentLoaded", () => {
+  const favs = JSON.parse(localStorage.getItem("favs")) || [];
+
+  // Добавляем класс "active" к кнопкам сохранения для фильмов, которые уже в избранном
+  favs.forEach((movie) => {
+    const target = document.querySelector(`[data-imdbID="${movie.imdbID}"]`);
+    if (target) {
+      target.classList.add("active");
+    }
+  });
+});
+
+// Пример функции для отображения фильмов на странице (можно использовать для загрузки фильмов в избранное)
+function displayFavorites() {
+  const favs = JSON.parse(localStorage.getItem("favs")) || [];
+  const favCards = document.getElementsByClassName("favoritsCards")[0];
+
+  // Очищаем текущие карточки
+  favCards.innerHTML = '';
+
+  // Добавляем карточки для каждого фильма из избранного
+  favs.forEach((movie) => {
     const card = document.createElement("div");
     const cardTitle = document.createElement("div");
-    const saved = document.createElement ("div");
+    const saved = document.createElement("div");
 
-    
     cardTitle.classList.add("favoritTitle");
     saved.classList.add("saved");
     card.classList.add("favoritsCard");
-    cardTitle.innerHTML=elem.title
-    
-    card.style.backgroundImage = `url(${elem.poster})`;
-    card.appendChild(cardTitle)
+
+    cardTitle.innerHTML = movie.title;
+    saved.setAttribute("data-imdbID", movie.imdbID);
+    saved.setAttribute("data-title", movie.title);
+    saved.setAttribute("data-poster", movie.poster);
+
+    // Добавляем обработчик для кнопки сохранения
+    saved.addEventListener("click", addSaved);
+
+    card.style.backgroundImage = `url(${movie.poster})`;
+    card.appendChild(cardTitle);
     card.appendChild(saved);
     favCards.appendChild(card);
+  });
+}
+
+// Вызов функции отображения избранных фильмов
+displayFavorites();
 
 
-});
+// function removeCardFromFavorites(target) {
+    // Найти контейнер для избранных карточек
+   // const favCards = document.getElementsByClassName("favoritsCards")[0];
 
-    
+    // Получаем imdbID для поиска карточки
+  //  const imdbID = target.getAttribute("data-imdbID");
+
+    // Ищем карточку, соответствующую imdbID
+  //  const cardToRemove = Array.from(favCards.children).find(card => {
+ //       return card.querySelector(".saved").getAttribute("data-imdbID") === imdbID;
+ //   });
+
+   // if (cardToRemove) {
+        // Удаляем карточку из DOM
+  //      favCards.removeChild(cardToRemove);
+    //  }
+//  }
+
+
+
+
 
